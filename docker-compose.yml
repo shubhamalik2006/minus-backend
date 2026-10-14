@@ -1,0 +1,26 @@
+# Local development: database + game server.  Run:  docker compose up --build
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: minus
+      POSTGRES_PASSWORD: minus
+      POSTGRES_DB: minus
+    ports:
+      - "5432:5432"
+    volumes:
+      - minus-db:/var/lib/postgresql/data
+
+  server:
+    build: .
+    env_file: .env
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://minus:minus@db:5432/minus
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  minus-db:
